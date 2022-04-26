@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const axios = require("axios");
 
 // @desc Create User
 // @route POST /api/users/
@@ -74,11 +75,34 @@ const getUsers = asyncHandler(async (req, res) => {
 // @access Private
 
 const getSavedItems = asyncHandler(async (req, res) => {
-  const savedItems = await User.find({ email: req.user.email }).select(
+  const { savedItems } = await User.findOne({ email: req.user.email }).select(
     "savedItems -_id"
   );
 
-  res.status(201).json(savedItems);
+  const {
+    data: { results: items },
+  } = await axios.get("https://v1-sneakers.p.rapidapi.com/v1/sneakers", {
+    params: {
+      limit: 100,
+    },
+    headers: {
+      "X-RapidAPI-Host": "v1-sneakers.p.rapidapi.com",
+      "X-RapidAPI-Key": process.env.API_KEY,
+    },
+  });
+
+  const newSaved = [];
+
+  for (let i = 0; i < savedItems.length; i++) {
+    console.log(savedItems[i]);
+    for (let j = 0; j < items.length; j++) {
+      if (savedItems[i] === items[j].id) {
+        newSaved.push(items[j]);
+      }
+    }
+  }
+
+  res.status(201).json(newSaved);
 });
 
 // @desc Save item
@@ -103,11 +127,7 @@ const saveItem = asyncHandler(async (req, res) => {
   );
 
   if (savedItem) {
-    const savedItems = await User.find({ email: req.user.email }).select(
-      "savedItems -_id"
-    );
-
-    res.status(200).json(savedItems);
+    res.status(200).json({ success: true });
   } else {
     res.status(400);
     throw new Error("Fail");

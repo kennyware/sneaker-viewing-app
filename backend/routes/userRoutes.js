@@ -14,8 +14,8 @@ const { protect } = require("../middleware/authMiddleware");
 router.get("/", getUsers);
 router.post("/", registerUser);
 router.post("/login", loginUser);
-router.get("/savedItems", protect, getSavedItems);
-router.post("/savedItems", protect, saveItem);
-router.delete("/savedItems/:id", protect, deleteItem);
+router.get("/saved", protect, getSavedItems);
+router.post("/saved", protect, saveItem);
+router.delete("/saved/:id", protect, deleteItem);
 
 module.exports = router;
