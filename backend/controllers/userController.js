@@ -4,6 +4,43 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
 
+let shoes;
+
+const getItems = async () => {
+  try {
+    const {
+      data: { results: items },
+    } = await axios.get("https://v1-sneakers.p.rapidapi.com/v1/sneakers", {
+      params: {
+        limit: 100,
+      },
+      headers: {
+        "X-RapidAPI-Host": "v1-sneakers.p.rapidapi.com",
+        "X-RapidAPI-Key": process.env.API_KEY,
+      },
+    });
+
+    shoes = items;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const filterItems = (savedItems, dbItems) => {
+  const items = [];
+  for (let i = 0; i < savedItems.length; i++) {
+    for (let j = 0; j < dbItems.length; j++) {
+      if (savedItems[i] === dbItems[j].id) {
+        items.push(dbItems[j]);
+      }
+    }
+  }
+
+  return items;
+};
+
+getItems();
+
 // @desc Create User
 // @route POST /api/users/
 // @access Public
@@ -71,7 +108,7 @@ const getUsers = asyncHandler(async (req, res) => {
 });
 
 // @desc Get user's saved items
-// @route GET /api/users/savedItems
+// @route GET /api/users/saved
 // @access Private
 
 const getSavedItems = asyncHandler(async (req, res) => {
@@ -79,34 +116,17 @@ const getSavedItems = asyncHandler(async (req, res) => {
     "savedItems -_id"
   );
 
-  const {
-    data: { results: items },
-  } = await axios.get("https://v1-sneakers.p.rapidapi.com/v1/sneakers", {
-    params: {
-      limit: 100,
-    },
-    headers: {
-      "X-RapidAPI-Host": "v1-sneakers.p.rapidapi.com",
-      "X-RapidAPI-Key": process.env.API_KEY,
-    },
-  });
-
-  const newSaved = [];
-
-  for (let i = 0; i < savedItems.length; i++) {
-    console.log(savedItems[i]);
-    for (let j = 0; j < items.length; j++) {
-      if (savedItems[i] === items[j].id) {
-        newSaved.push(items[j]);
-      }
-    }
+  if (shoes.length > 0) {
+    const items = filterItems(savedItems, shoes);
+    return res.status(200).json(items);
+  } else {
+    res.status(400);
+    throw new Error("Fail");
   }
-
-  res.status(201).json(newSaved);
 });
 
 // @desc Save item
-// @route POST /api/users/savedItems
+// @route POST /api/users/saved
 // @access Private
 
 const saveItem = asyncHandler(async (req, res) => {
@@ -115,6 +135,12 @@ const saveItem = asyncHandler(async (req, res) => {
   if (!item) {
     res.status(400);
     throw new Error("Please provide an item id string");
+  }
+
+  const saveCheck = await User.findOne({ savedItems: item });
+
+  if (saveCheck) {
+    return res.status(400).json({ message: "Item already saved." });
   }
 
   const savedItem = await User.updateOne(
@@ -127,7 +153,17 @@ const saveItem = asyncHandler(async (req, res) => {
   );
 
   if (savedItem) {
-    res.status(200).json({ success: true });
+    const { savedItems } = await User.findOne({ email: req.user.email }).select(
+      "savedItems -_id"
+    );
+
+    if (shoes.length > 0) {
+      const items = filterItems(savedItems, shoes);
+      return res.status(200).json(items);
+    } else {
+      res.status(400);
+      throw new Error("Fail. No items to match against.");
+    }
   } else {
     res.status(400);
     throw new Error("Fail");
@@ -135,7 +171,7 @@ const saveItem = asyncHandler(async (req, res) => {
 });
 
 // @desc Delete saved item
-// @route DELETE /api/users/savedItems/:id
+// @route DELETE /api/users/saved/:id
 // @access Private
 
 const deleteItem = asyncHandler(async (req, res) => {
@@ -148,12 +184,22 @@ const deleteItem = asyncHandler(async (req, res) => {
     { $pull: { savedItems: req.params.id } }
   );
 
-  if (!deleted) {
+  if (deleted) {
+    const { savedItems } = await User.findOne({ email: req.user.email }).select(
+      "savedItems -_id"
+    );
+
+    if (shoes.length > 0) {
+      const items = filterItems(savedItems, shoes);
+      return res.status(200).json(items);
+    } else {
+      res.status(400);
+      throw new Error("Fail. No items to match against.");
+    }
+  } else {
     res.status(400);
     throw new Error("No item found with that string");
   }
-
-  res.json({ item: req.params.id, message: `Item Deleted` });
 });
 
 // Generate JWT

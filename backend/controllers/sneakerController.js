@@ -69,6 +69,7 @@ const getSneakerById = asyncHandler(async (req, res) => {
 
     res.status(200).json(sneaker[0]);
   } catch (error) {
+    res.status(400);
     throw new Error(error);
   }
 });
