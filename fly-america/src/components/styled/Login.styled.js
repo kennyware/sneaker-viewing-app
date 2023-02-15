@@ -11,8 +11,8 @@ export const StyledLogin = styled.section`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     border: 1px solid #111;
+    padding-top: 50px;
 
     h1 {
       margin-bottom: 20px;

@@ -11,8 +11,8 @@ export const StyledRegister = styled.section`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     border: 1px solid #111;
+    padding-top: 50px;
 
     h1 {
       margin-bottom: 20px;
@@ -24,6 +24,7 @@ export const StyledRegister = styled.section`
 
     #register-form {
       margin-top: 40px;
+      margin-bottom: 20px;
       input {
         display: block;
         width: 100%;
@@ -65,6 +66,10 @@ export const StyledRegister = styled.section`
         }
       }
     }
+  }
+
+  p a {
+    color: blue;
   }
 
   @media (max-width: 426px) {

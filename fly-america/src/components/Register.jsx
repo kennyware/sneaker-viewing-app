@@ -3,7 +3,7 @@ import loginImg from "../loginImg.jpg";
 import Loader from "./Loader";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { registerUser, reset } from "../features/auth/authSlice";
 import ErrorBox from "./ErrorBox";
 
@@ -105,6 +105,9 @@ const Register = () => {
           </div>
           <button type="submit">Sign Up</button>
         </form>
+        <p>
+          Already have an account? <Link to="/login">Log in!</Link>
+        </p>
       </div>
     </StyledRegister>
   );
