@@ -1,9 +1,9 @@
-import { StyledLogin } from "./styled/Login.styled";
+import { StyledLogin, LoginContainer } from "./styled/Login.styled";
 import loginImg from "../loginImg.jpg";
 import Loader from "./Loader";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { login, reset } from "../features/auth/authSlice";
 import ErrorBox from "./ErrorBox";
 
@@ -88,6 +88,9 @@ const Login = () => {
           </div>
           <button type="submit">Login</button>
         </form>
+        <p>
+          Don't have an account? <Link to="/register">Sign Up Now!</Link>
+        </p>
       </div>
     </StyledLogin>
   );

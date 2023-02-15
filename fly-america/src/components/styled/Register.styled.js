@@ -2,24 +2,28 @@ import styled from "styled-components";
 
 export const StyledRegister = styled.section`
   width: 100%;
-  height: 400px;
   display: flex;
+  padding-top: 60px;
 
   .register-group {
     width: 50%;
+    height: 500px;
     display: flex;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     border: 1px solid #111;
-    padding: 20px;
+
+    h1 {
+      margin-bottom: 20px;
+    }
 
     img {
-      width: 80%;
-      margin-top: 50px;
+      max-width: 80%;
     }
 
     #register-form {
-      margin-top: 70px;
+      margin-top: 40px;
       input {
         display: block;
         width: 100%;

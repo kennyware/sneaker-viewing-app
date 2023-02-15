@@ -12,6 +12,8 @@ const GlobalStyles = createGlobalStyle`
 body {
     font-family: 'Noto Sans', sans-serif;
     width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
     min-height: 100vh;
     position: relative;
 }

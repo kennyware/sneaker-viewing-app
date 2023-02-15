@@ -2,24 +2,29 @@ import styled from "styled-components";
 
 export const StyledLogin = styled.section`
   width: 100%;
-  height: 400px;
   display: flex;
+  padding-top: 60px;
 
   .login-group {
     width: 50%;
+    height: 500px;
     display: flex;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     border: 1px solid #111;
-    padding: 20px;
+
+    h1 {
+      margin-bottom: 20px;
+    }
 
     img {
-      width: 80%;
-      margin-top: 50px;
+      max-width: 80%;
     }
 
     #login-form {
-      margin-top: 80px;
+      margin-top: 40px;
+      margin-bottom: 20px;
       input {
         display: block;
         width: 100%;
@@ -61,6 +66,10 @@ export const StyledLogin = styled.section`
         }
       }
     }
+  }
+
+  p a {
+    color: blue;
   }
 
   @media (max-width: 426px) {
