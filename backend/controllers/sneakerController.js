@@ -48,6 +48,7 @@ const getSneakers = asyncHandler(async (req, res) => {
     res.status(200).json(sneakers);
   } catch (err) {
     res.status(400);
+    console.log(res.getHeaders());
     throw new Error(err);
   }
 });

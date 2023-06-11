@@ -2,6 +2,8 @@ import axios from "axios";
 
 const API_URL = "/api/sneakers/";
 
+axios.defaults.headers.common["Retry-After"] = 3600;
+
 export const getSneakers = async (gender) => {
   const { data } = await axios.get(API_URL, {
     params: { gender },
